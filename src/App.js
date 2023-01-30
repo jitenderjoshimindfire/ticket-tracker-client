@@ -4,6 +4,7 @@ import TicketList from "./components/TicketList";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import TicketForm from "./components/TicketForm";
 import Login from "./components/Login";
+import { ToastContainer, toast } from "react-toastify";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,7 @@ function App() {
   return (
     <div className="App">
       <RouterProvider router={router} />
+      <ToastContainer />
     </div>
   );
 }

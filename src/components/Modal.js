@@ -5,13 +5,15 @@ import { useState } from "react";
 import axios from "../axios";
 import CommentList from "./comments/CommentList";
 import formatDate from "../util";
+import { toast } from "react-toastify";
 function TicketModal(props) {
   const [commentState, setCommentState] = useState({
     comment: "",
   });
-  console.log({ assignedTo: props.ticketData.assignedTo }, "kkkkk");
+ 
+  // console.log({ assignedTo: props.ticketData.assignedTo }, "kkkkk");
   const [assignedToValue, setAssignedToValue] = useState("");
-  console.log({ assignedToValue }, "lllll");
+  // console.log({ assignedToValue }, "lllll");
   function handleClose(e) {
     props.handleCardClick(e);
   }
@@ -20,7 +22,7 @@ function TicketModal(props) {
     const { name, value } = target;
 
     setCommentState({ ...commentState, [name]: value });
-    console.log(commentState);
+    //console.log(commentState);
   }
 
   async function handleClick(e) {
@@ -42,12 +44,17 @@ function TicketModal(props) {
     // console.log(response.data.data);
 
     if (response.status === 200) {
-      props.updateCommentCallback(ticketId, response.data.data);
-    }
+      await props.updateCommentCallback(ticketId, response.data.data);
 
-    setCommentState({
-      comment: "",
-    });
+      toast.success("Comments added successfully!!", {
+        autoClose: 2000,
+        theme: "colored",
+      });
+
+      setCommentState({
+        comment: "",
+      });
+    }
   }
 
   const onChangeHandler = async (e) => {
@@ -70,11 +77,15 @@ function TicketModal(props) {
 
     if (response.status === 200) {
       setAssignedToValue(email);
-      props.assignTicketCallback({
+      await props.assignTicketCallback({
         email,
         name,
         _id,
         ticketId: ticketId,
+      });
+      toast.success("Assignee changed successfully!!", {
+        autoClose: 2000,
+        theme: "colored",
       });
     }
   };

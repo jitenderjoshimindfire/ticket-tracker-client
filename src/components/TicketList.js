@@ -16,6 +16,7 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 import NavBar from "./Nav";
 import TicketModal from "./Modal";
 import formatDate from "../util";
+import { toast } from "react-toastify";
 
 const progressOptions = ["In Progress", "Blocked", "Resolved"];
 function TicketList() {
@@ -76,6 +77,11 @@ function TicketList() {
     // console.log(response);
     if (response.status === 200) {
       updateTicketState(response.data.data);
+      toast.success("Ticket state changed !!", {
+        autoClose: 2000,
+        position: "top-right",
+        theme: "colored",
+      });
     }
   };
 
@@ -119,32 +125,52 @@ function TicketList() {
 
   async function handleDeleteTicket(e, i) {
     e.preventDefault();
-    const currentTicket = ticketData.data[i];
-    const tokenData = localStorage.getItem("LoginToken");
-    const tokenString = JSON.parse(tokenData);
-    const token = tokenString.token;
-    await axios.delete(`tickets/${currentTicket._id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    setTicketDeleted(true);
+    if (window.confirm("Are you sure you want to delete")) {
+      const currentTicket = ticketData.data[i];
+      const tokenData = localStorage.getItem("LoginToken");
+      const tokenString = JSON.parse(tokenData);
+      const token = tokenString.token;
+      const response = await axios.delete(`tickets/${currentTicket._id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response.status === 204) {
+        setTicketDeleted(true);
+        toast.success("ticket deleted", {
+          autoClose: 2000,
+        });
+      }
+
+      if (ticketDeleted === true) setTicketDeleted(false);
+    }
   }
 
   const updateCommentCallback = (ticketId, incommingComment) => {
     const newComment = incommingComment;
     // console.log(newComment, "newcomment");
+    // setTicketData((prevState) => ({
+    //   ...prevState,
+    //   data: prevState.data.map((ticket) => {
+    //     if (ticket._id === ticketId) {
+    //       const updatedTicket = {
+    //         ...ticket,
+    //         comments: [...ticket.comments, newComment],
+    //       };
+    //       setModalData(updatedTicket);
+    //     }
+    //     return ticket;
+    //   }),
+    // }));
+
     setTicketData((prevState) => ({
       ...prevState,
-      data: prevState.data.map((ticket) => {
-        if (ticket._id === ticketId) {
-          const updatedTicket = {
-            ...ticket,
-            comments: [...ticket.comments, newComment],
-          };
-          setModalData(updatedTicket);
-        }
-        return ticket;
-      }),
+      data: prevState.data.map((ticket) =>
+        ticket._id === ticketId
+          ? { ...ticket, comments: [...ticket.comments, newComment] }
+          : ticket
+      ),
     }));
+
   };
 
   const assignTicketCallback = ({ ticketId, ...ticketAssignedDetails }) => {
@@ -193,7 +219,10 @@ function TicketList() {
                       <Card.Subtitle className="mb-2 text-muted">
                         {ticket.createdBy}
                       </Card.Subtitle>
-                      <Card.Text>{ticket.description}</Card.Text>
+                      <Card.Text>{`${ticket.description.substring(
+                        0,
+                        30
+                      )}...`}</Card.Text>
                       <div
                         style={{
                           display: "flex",
