@@ -1,11 +1,11 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Dropdown from "react-bootstrap/Dropdown";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Card from "react-bootstrap/Card";
 import axios from "../axios";
 import LoginNav from "./LoginNav";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const productOptions = [
@@ -39,8 +39,6 @@ function TicketForm() {
         ...error,
         [name]: null,
       });
-
-    // console.log(ticketFormState, "ticktet state");
   }
 
   function handleSelectTicketDropdown(e) {
@@ -61,7 +59,6 @@ function TicketForm() {
 
     const newErrors = findFormErrors();
     console.log(newErrors);
-    //console.log(JSON.stringify(requestObject));
 
     if (Object.keys(newErrors).length > 0) {
       setError(newErrors);
@@ -91,8 +88,6 @@ function TicketForm() {
     const { title, userEmail, createdBy, description, productType } =
       ticketFormState;
     const newErrors = {};
-
-    //console.log(title, userEmail, createdBy, description, productType);
 
     if (!title || title === "") {
       newErrors.title = "Title cannot be blank";

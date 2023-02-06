@@ -1,7 +1,6 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
-import Stack from "react-bootstrap/Stack";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { useState } from "react";
@@ -9,7 +8,7 @@ import axios from "../axios";
 import Card from "react-bootstrap/Card";
 import LoginNav from "./LoginNav";
 import { Navigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 const mailRegex =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -28,7 +27,6 @@ function Login() {
     const { name, value } = target;
 
     setAppLoginDetails({ ...appLoginDetails, [name]: value });
-    // console.log(appLoginDetails);
 
     if (!!error[name]) setError({ ...error, [name]: null });
   }
@@ -51,16 +49,13 @@ function Login() {
           theme: "colored",
         });
       }
-      //console.log(request);
+
       const { token } = response.data;
       const { user } = response.data.data;
       const userData = { token, ...user };
       setUser(userData);
       localStorage.setItem("LoginToken", JSON.stringify(userData));
     }
-    //const result = localStorage.getItem("LoginToken");
-    //localStorage.clear();
-    // console.log(result);
   }
 
   const findLoginFormErrors = () => {

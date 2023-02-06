@@ -4,15 +4,10 @@ import axios from "../axios";
 import "./TicketList.css";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
-//import CardGroup from "react-bootstrap/CardGroup";
-import Modal from "react-bootstrap/Modal";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
-import Form from "react-bootstrap/Form";
 import Container from "react-bootstrap/Container";
-import Stack from "react-bootstrap/Stack";
 import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
 import NavBar from "./Nav";
 import TicketModal from "./Modal";
 import formatDate from "../util";
@@ -30,7 +25,6 @@ function TicketList() {
 
   useEffect(() => {
     async function getTickets() {
-      // console.log("inside getTiclets");
       const tokenData = localStorage.getItem("LoginToken");
       const tokenString = JSON.parse(tokenData);
       const token = tokenString.token;
@@ -52,9 +46,8 @@ function TicketList() {
   useEffect(() => {
     async function getAllStaff() {
       const request = await axios.get("users");
-      // console.log(request.data.data.users);
+
       if (request.data.data.users) {
-        // setTicketData({ staffMembers: request.data.data.users });
         setTicketData((prevState) => ({
           ...prevState,
           staffMembers: request.data.data.users,
@@ -65,7 +58,6 @@ function TicketList() {
   }, []);
 
   const handleSelectProgressDropdown = (ticketId) => async (e) => {
-    // console.log(ticketId);
     const tokenData = localStorage.getItem("LoginToken");
     const tokenString = JSON.parse(tokenData);
     const token = tokenString.token;
@@ -74,7 +66,7 @@ function TicketList() {
       { ticketState: e },
       { headers: { Authorization: `Bearer ${token}` } }
     );
-    // console.log(response);
+
     if (response.status === 200) {
       updateTicketState(response.data.data);
       toast.success("Ticket state changed !!", {
@@ -88,7 +80,6 @@ function TicketList() {
   const updateTicketState = (data) => {
     const newTicketState = data.ticket.ticketState;
     const ticketId = data.ticket._id;
-    // console.log(newTicketState, ticketId);
 
     setTicketData((prevState) => ({
       ...prevState,
@@ -102,8 +93,6 @@ function TicketList() {
           : ticket
       ),
     }));
-
-    // console.log(ticketData);
   };
 
   const handleCardClick = (e, i) => {
@@ -147,30 +136,17 @@ function TicketList() {
 
   const updateCommentCallback = (ticketId, incommingComment) => {
     const newComment = incommingComment;
-    // console.log(newComment, "newcomment");
-    // setTicketData((prevState) => ({
-    //   ...prevState,
-    //   data: prevState.data.map((ticket) => {
-    //     if (ticket._id === ticketId) {
-    //       const updatedTicket = {
-    //         ...ticket,
-    //         comments: [...ticket.comments, newComment],
-    //       };
-    //       setModalData(updatedTicket);
-    //     }
-    //     return ticket;
-    //   }),
-    // }));
-
+    const updatedData = ticketData.data.map((ticket) =>
+      ticket._id === ticketId
+        ? { ...ticket, comments: [...ticket.comments, newComment] }
+        : ticket
+    );
+    const index = ticketData.data.findIndex(({ _id }) => _id === ticketId);
+    setModalData(updatedData[index]);
     setTicketData((prevState) => ({
       ...prevState,
-      data: prevState.data.map((ticket) =>
-        ticket._id === ticketId
-          ? { ...ticket, comments: [...ticket.comments, newComment] }
-          : ticket
-      ),
+      data: updatedData,
     }));
-
   };
 
   const assignTicketCallback = ({ ticketId, ...ticketAssignedDetails }) => {
@@ -287,18 +263,3 @@ function TicketList() {
 }
 
 export default TicketList;
-// const assignTicketCallback = ({ ticketId, ...ticketAssignedDetails }) => {
-
-//   setTicketData((prevState) => ({
-//     ...prevState,
-//     data: prevState.data.map((ticket) => {
-//       console.log(ticket._id, ticketId);
-//       return ticket._id === ticketId
-//         ? {
-//             ...ticket,
-//             assignedTo: ticketAssignedDetails,
-//           }
-//         : ticket;
-//     }),
-//   }));
-// };

@@ -10,10 +10,9 @@ function TicketModal(props) {
   const [commentState, setCommentState] = useState({
     comment: "",
   });
- 
-  // console.log({ assignedTo: props.ticketData.assignedTo }, "kkkkk");
+
   const [assignedToValue, setAssignedToValue] = useState("");
-  // console.log({ assignedToValue }, "lllll");
+
   function handleClose(e) {
     props.handleCardClick(e);
   }
@@ -22,18 +21,17 @@ function TicketModal(props) {
     const { name, value } = target;
 
     setCommentState({ ...commentState, [name]: value });
-    //console.log(commentState);
   }
 
   async function handleClick(e) {
     e.preventDefault();
-    //console.log(props.ticketData);
+
     const ticketId = props.ticketData._id;
     const tokenData = localStorage.getItem("LoginToken");
     const tokenString = JSON.parse(tokenData);
     const token = tokenString.token;
     const requestObject = { ...commentState, userId: tokenString._id };
-    //console.log(requestObject);
+
     const response = await axios.post(
       `tickets/${ticketId}/comments`,
       requestObject,
@@ -41,7 +39,6 @@ function TicketModal(props) {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-    // console.log(response.data.data);
 
     if (response.status === 200) {
       await props.updateCommentCallback(ticketId, response.data.data);
@@ -58,7 +55,6 @@ function TicketModal(props) {
   }
 
   const onChangeHandler = async (e) => {
-    //console.log(props.ticketData);
     const ticketId = props.ticketData._id;
     const tokenData = localStorage.getItem("LoginToken");
     const tokenString = JSON.parse(tokenData);
