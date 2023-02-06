@@ -1,11 +1,10 @@
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
-import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import { Navigate } from "react-router-dom";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 function NavBar() {
   const [loggedOut, setLoggedOut] = useState(false);
@@ -14,6 +13,7 @@ function NavBar() {
     localStorage.clear();
     if (!localStorage.getItem("LoginToken")) {
       setLoggedOut(true);
+      toast.success("Logout successful");
     }
   }
 
@@ -22,7 +22,7 @@ function NavBar() {
   }
 
   return (
-    <>
+    <div>
       <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
         <Container>
           <Navbar.Brand>Ticket Tracker</Navbar.Brand>
@@ -39,7 +39,8 @@ function NavBar() {
           </Navbar.Collapse>
         </Container>
       </Navbar>
-    </>
+      
+    </div>
   );
 }
 
